@@ -48,6 +48,7 @@ option(WHISPER_BUILD_TESTS             "whisper: build tests"    ${WHISPER_STAND
 option(WHISPER_BUILD_EXAMPLES          "whisper: build examples" ${WHISPER_STANDALONE})
 
 option(WHISPER_SUPPORT_SDL2            "whisper: support for libSDL2" OFF)
+option(WHISPER_SUPPORT_PIPEWIRE        "whisper: support for PipeWire" OFF)
 
 if (APPLE)
     option(WHISPER_NO_ACCELERATE       "whisper: disable Accelerate framework" OFF)

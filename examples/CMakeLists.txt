@@ -14,6 +14,19 @@ if (WHISPER_SUPPORT_SDL2)
     message(STATUS "SDL2_LIBRARIES = ${SDL2_LIBRARIES}")
 endif()
 
+if (WHISPER_SUPPORT_PIPEWIRE)
+    # PipeWire, SPA
+    find_package(PkgConfig)
+    pkg_search_module(PIPEWIRE libpipewire-0.3 libpipewire-0.2 REQUIRED)
+    pkg_search_module(SPA libspa-0.2 libspa-0.1 REQUIRED)
+
+    string(STRIP "${PIPEWIRE_LIBRARIES}" PIPEWIRE_LIBRARIES)
+
+    message(STATUS "PIPEWIRE_INCLUDE_DIRS = ${PIPEWIRE_INCLUDE_DIRS}")
+    message(STATUS "PIPEWIRE_LINK_LIBRARIES = ${PIPEWIRE_LINK_LIBRARIES}")
+    message(STATUS "SPA_INCLUDE_DIRS = ${SPA_INCLUDE_DIRS}")
+endif()
+
 # common
 
 set(TARGET common)
@@ -43,6 +56,26 @@ if (WHISPER_SUPPORT_SDL2)
     target_link_libraries(${TARGET} PRIVATE ${SDL2_LIBRARIES})
 
     set_target_properties(${TARGET} PROPERTIES POSITION_INDEPENDENT_CODE ON)
+    set(COMMON_LIB ${TARGET})
+endif()
+
+if (WHISPER_SUPPORT_PIPEWIRE)
+    # common-pw
+
+    set(TARGET common-pw)
+
+    add_library(${TARGET} STATIC
+            common-pw.h
+            common-pw.cpp
+            )
+
+    include(DefaultTargetOptions)
+
+    target_include_directories(${TARGET} PUBLIC ${PIPEWIRE_INCLUDE_DIRS} ${SPA_INCLUDE_DIRS})
+    target_link_libraries(${TARGET} PRIVATE ${PIPEWIRE_LINK_LIBRARIES})
+
+    set_target_properties(${TARGET} PROPERTIES POSITION_INDEPENDENT_CODE ON)
+    set(COMMON_LIB ${TARGET})
 endif()
 
 # examples
